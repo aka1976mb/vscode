@@ -1672,6 +1672,9 @@ export class ChatWidget extends Disposable implements IChatWidget {
 		}
 
 		this.input.render(container, '', this);
+		if (this.bodyDimension?.width) {
+			this.input.layout(this.bodyDimension.width);
+		}
 
 		this._register(this.input.onDidLoadInputState(() => {
 			this.refreshParsedInput();
@@ -2395,7 +2398,7 @@ export class ChatWidget extends Disposable implements IChatWidget {
 		this.logService.debug(`ChatWidget#_autoAttachInstructions: prompt files are always enabled`);
 		const enabledTools = this.input.currentModeKind === ChatModeKind.Agent ? this.input.selectedToolsModel.userSelectedTools.get() : undefined;
 		const enabledSubAgents = this.input.currentModeKind === ChatModeKind.Agent ? this.input.currentModeObs.get().agents?.get() : undefined;
-		const computer = this.instantiationService.createInstance(ComputeAutomaticInstructions, enabledTools, enabledSubAgents);
+		const computer = this.instantiationService.createInstance(ComputeAutomaticInstructions, this.input.currentModeObs.get(), enabledTools, enabledSubAgents);
 		await computer.collect(attachedContext, CancellationToken.None);
 	}
 
