@@ -72,6 +72,18 @@ export class ChatWindowNotifier extends Disposable implements IWorkbenchContribu
 			return;
 		}
 
+		// Wait a microtask to allow any synchronous auto-confirmations to complete.
+		// This prevents notifications for tools that briefly enter WaitingForConfirmation
+		// state before being auto-confirmed through various mechanisms (per-session rules,
+		// per-workspace rules, etc.)
+		await Promise.resolve();
+
+		// Re-check that the model still needs input after the microtask delay
+		const model = this._chatService.getSession(sessionResource);
+		if (!model?.requestNeedsInput.get()) {
+			return;
+		}
+
 		// Find the widget to determine the target window
 		const widget = this._chatWidgetService.getWidgetBySessionResource(sessionResource);
 		const targetWindow = widget ? dom.getWindow(widget.domNode) : mainWindow;

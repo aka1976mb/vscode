@@ -1273,7 +1273,8 @@ class ChatTerminalToolOutputSection extends Disposable {
 
 	private _getOutputContentHeight(lineCount: number, rowHeight: number, padding: number): number {
 		const contentRows = Math.max(lineCount, MIN_OUTPUT_ROWS);
-		const adjustedRows = contentRows + (lineCount > MAX_OUTPUT_ROWS ? 1 : 0);
+		// Always add an extra row for buffer space to prevent the last line from being cut off during streaming
+		const adjustedRows = contentRows + 1;
 		return (adjustedRows * rowHeight) + padding;
 	}
 
@@ -1301,8 +1302,11 @@ class ChatTerminalToolOutputSection extends Disposable {
 		// Calculate the pixel width needed for the content
 		// Add some padding for scrollbar and visual comfort
 		// Account for container padding
+		// Add one extra character width (cursorWidth) to account for the cursor position
+		// which may be one character beyond the last content character during streaming
 		const horizontalPadding = 24;
-		const contentWidth = Math.ceil(maxColumnWidth * charWidth) + horizontalPadding;
+		const cursorWidth = charWidth;
+		const contentWidth = Math.ceil(maxColumnWidth * charWidth) + horizontalPadding + cursorWidth;
 
 		// Get the max available width (container's parent width)
 		const parentWidth = this.domNode.parentElement?.clientWidth ?? 0;
