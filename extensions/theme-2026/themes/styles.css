@@ -38,12 +38,11 @@
 .monaco-workbench .part.auxiliarybar { box-shadow: var(--shadow-md); z-index: 40; position: relative; }
 
 /* Ensure iframe containers in pane-body render above sidebar z-index */
-/* Commented out - may cause content to be hidden by z-index issues
 .monaco-workbench > div[data-keybinding-context],
 .monaco-workbench > div[data-keybinding-context] {
 	z-index: 50 !important;
 }
-*/
+
 
 /* Ensure webview containers render above sidebar z-index */
 .monaco-workbench .part.sidebar .webview,
@@ -95,7 +94,7 @@
 /* Title Bar */
 .monaco-workbench.vs .part.titlebar { box-shadow: var(--shadow-md); }
 
-.monaco-workbench.vs-dark .part.titlebar {
+.monaco-workbench .part.titlebar {
 	position: relative;
 	overflow: visible !important;
 	background: linear-gradient(
@@ -104,8 +103,15 @@
 		transparent 100%
 	), var(--vscode-titleBar-activeBackground) !important;
 }
+
 .monaco-workbench .part.titlebar.inactive {
 	background: var(--vscode-titleBar-inactiveBackground) !important;
+
+	.command-center .monaco-action-bar,
+	.command-center .actions-container,
+	.agent-status-pill, .agent-status-badge {
+		background-color: transparent !important;
+	}
 }
 .monaco-workbench .part.titlebar .titlebar-container,
 .monaco-workbench .part.titlebar .titlebar-center,
@@ -426,8 +432,27 @@
 
 
 /* Notebook */
-.monaco-workbench .notebookOverlay .monaco-list .cell-focus-indicator { box-shadow: var(--shadow-sm); border-radius: var(--radius-md); }
-.monaco-workbench .notebookOverlay .monaco-list .monaco-list-row.focused .cell-focus-indicator { box-shadow: var(--shadow-md); }
+
+.monaco-workbench .notebookOverlay.notebook-editor {
+	z-index: 35 !important;
+}
+
+.monaco-workbench .notebookOverlay .monaco-list-row .cell-editor-part:before {
+	box-shadow: inset var(--shadow-sm);
+	border-radius: var(--radius-md);
+}
+
+.notebookOverlay .monaco-list-row .cell-title-toolbar {
+	background-color: var(--vscode-editorWidget-background) !important;
+	backdrop-filter: var(--backdrop-blur-md);
+	-webkit-backdrop-filter: var(--backdrop-blur-md);
+	border-radius: var(--radius-md);
+	box-shadow: var(--shadow-sm);
+}
+
+.notebookOverlay .cell-bottom-toolbar-container .action-item {
+	border-radius: var(--radius-sm);
+}
 
 /* Inline Chat */
 .monaco-workbench .monaco-editor .inline-chat { box-shadow: var(--shadow-lg); border: none; border-radius: var(--radius-xl); }

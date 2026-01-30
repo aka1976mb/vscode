@@ -790,6 +790,9 @@ export class ChatWidget extends Disposable implements IChatWidget {
 			dom.setVisibility(numItems !== 0, this.listContainer);
 		}
 
+		// Only show welcome getting started until extension is installed
+		this.container.classList.toggle('chat-view-getting-started-disabled', this.chatEntitlementService.sentiment.installed);
+
 		this._onDidChangeEmptyState.fire();
 	}
 
