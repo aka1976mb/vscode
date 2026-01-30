@@ -611,9 +611,9 @@ export class ChatTerminalToolProgressPart extends BaseChatToolInvocationSubPart 
 				}
 				// If we've received many data events, treat it as real output even if cursor
 				// hasn't moved past the marker (e.g., progress bars updating on same line)
-				// Shell integration sequences fire multiple times per command (PromptStart, CommandStart,
-				// CommandExecuted, CommandFinished, etc.), so we need a higher threshold
-				return receivedDataCount > 4;
+				// Shell integration sequences fire a couple times per command (PromptStart, CommandStart,
+				// CommandExecuted), so we need a small threshold to filter those out
+				return receivedDataCount > 2;
 			};
 
 			// Use the extracted auto-expand logic
