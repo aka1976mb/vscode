@@ -512,12 +512,10 @@ export class LanguageModelToolsService extends Disposable implements ILanguageMo
 			invocationTimeWatch.stop();
 			this.ensureToolDetails(dto, toolResult, tool.data);
 
-			if (toolInvocation?.didExecuteTool(toolResult).type === IChatToolInvocation.StateKind.WaitingForPostApproval) {
-				const autoConfirmedPost = await this.shouldAutoConfirmPostExecution(tool.data.id, tool.data.runsInWorkspace, tool.data.source, dto.parameters, dto.context?.sessionResource);
-				if (autoConfirmedPost) {
-					IChatToolInvocation.confirmWith(toolInvocation, autoConfirmedPost);
-				}
+			const afterExecuteState = await toolInvocation?.didExecuteTool(toolResult, undefined, () =>
+				this.shouldAutoConfirmPostExecution(tool.data.id, tool.data.runsInWorkspace, tool.data.source, dto.parameters, dto.context?.sessionResource));
 
+			if (toolInvocation && afterExecuteState?.type === IChatToolInvocation.StateKind.WaitingForPostApproval) {
 				const postConfirm = await IChatToolInvocation.awaitPostConfirmation(toolInvocation, token);
 				if (postConfirm.type === ToolConfirmKind.Denied) {
 					throw new CancellationError();
